@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ask Her Out</title>
+    <style>
+      /* Combined CSS from style.css */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+      }
+      
+      body {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #830553;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+        gap: 20px;
+        max-width: 500px;
+        margin: 20px;
+      }
+      
+      .container .tenor-gif-embed {
+        max-width: 200px;
+      }
+      
+      .container .btn {
+        display: flex;
+        gap: 25px;
+      }
+      
+      .btn a {
+        text-decoration: none;
+        color: #111;
+        background: #fff;
+        padding: 10px 25px;
+        border-radius: 8px;
+        box-shadow: 0.5rem 1rem 3rem hsl(0, 0%, 0%, 0.3);
+        cursor: pointer;
+      }
+
+      /* Hide all pages initially except the first one */
+      .page {
+        display: none;
+      }
+      
+      .page.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      #no-btn-3 {
+        position: relative;
+      }
+      
+      #play-music {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      /* Hide YouTube player visually */
+      .youtube-player {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+    <script>
+      let player;
+
+      // Initialize YouTube API
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('youtube-player', {
+          height: '1',
+          width: '1',
+          videoId: 'O_xFSe4fZuA', // ← REPLACE THIS VALUE with your preferred YouTube video ID
+          playerVars: {
+            'autoplay': 0,
+            'controls': 0,
+            'disablekb': 1,
+            'playsinline': 1,
+            'showinfo': 0,
+            'rel': 0,
+            'iv_load_policy': 3,
+            'modestbranding': 1,
+            'loop': 1
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        // Player is ready but we don't autoplay
+        document.getElementById('play-music').addEventListener('click', function() {
+          if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+            player.pauseVideo();
+            this.textContent = '🔈';
+          } else {
+            player.playVideo();
+            this.textContent = '🔊';
+          }
+        });
+      }
+
+      function onPlayerStateChange(event) {
+        // If video ends, replay it (loop functionality)
+        if (event.data === YT.PlayerState.ENDED) {
+          player.playVideo();
+        }
+      }
+
+      // This function will be used when the page loads
+      document.addEventListener('DOMContentLoaded', () => {
+        // Load YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        // Initialize page navigation
+        initPageNavigation();
+
+        // Add the random movement for the final "No" button
+        const moveRandom = document.getElementById("no-btn-3");
+        moveRandom.addEventListener("mouseenter", function(e) {
+          moveRandomEl(e.target);
+        });
+
+        // Add click event to play music when interacting with the page
+        document.addEventListener('click', function() {
+          if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
+            player.playVideo();
+            document.getElementById('play-music').textContent = '🔊';
+          }
+        });
+      });
+
+      // Function to show a specific page and hide others
+      function showPage(pageId) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => {
+          page.classList.remove('active');
+        });
+        document.getElementById(pageId).classList.add('active');
+      }
+
+      // Initialize page navigation buttons
+      function initPageNavigation() {
+        // Home page buttons
+        document.getElementById('yes-btn-home').addEventListener('click', function() {
+          showPage('yes-page');
+        });
+        document.getElementById('no-btn-home').addEventListener('click', function() {
+          showPage('no1-page');
+        });
+        
+        // No1 page buttons
+        document.getElementById('yes-btn-1').addEventListener('click', function() {
+          showPage('yes-page');
+        });
+        document.getElementById('no-btn-1').addEventListener('click', function() {
+          showPage('no2-page');
+        });
+        
+        // No2 page buttons
+        document.getElementById('yes-btn-2').addEventListener('click', function() {
+          showPage('yes-page');
+        });
+        document.getElementById('no-btn-2').addEventListener('click', function() {
+          showPage('no3-page');
+        });
+        
+        // No3 page button
+        document.getElementById('yes-btn-3').addEventListener('click', function() {
+          showPage('yes-page');
+        });
+      }
+
+      // Function to move the button randomly
+      function moveRandomEl(elm) {
+        elm.style.position = "absolute";
+        elm.style.top = Math.floor(Math.random() * 90 + 5) + "%";
+        elm.style.left = Math.floor(Math.random() * 90 + 5) + "%";
+      }
+    </script>
+  </head>
+  
+  <body>
+    <!-- YouTube hidden player container -->
+    <div id="youtube-player" class="youtube-player"></div>
+
+    <button id="play-music">🔈</button>
+
+    <!-- Home page -->
+    <div class="container page active" id="home-page">
+      <div
+        class="tenor-gif-embed"
+        data-postid="22885016"
+        data-share-method="host"
+        data-aspect-ratio="1.04918"
+        data-width="100%"
+      >
+        <a href="https://tenor.com/view/manja-gif-22885016">Manja Sticker</a
+        >from
+        <a href="https://tenor.com/search/manja-stickers">Manja Stickers</a>
+      </div>
+      <h1>DO you love me? 🤗</h1>
+      <p>~Mahfuj is all yours "মন দুয়ারী"</p>
+
+      <div class="btn">
+        <a id="yes-btn-home">Yes</a>
+        <a id="no-btn-home">No</a>
+      </div>
+    </div>
+
+    <!-- Yes page -->
+    <div class="container page" id="yes-page">
+      <div
+        class="tenor-gif-embed"
+        data-postid="253027946666209433"
+        data-share-method="host"
+        data-aspect-ratio="1.37853"
+        data-width="100%"
+      >
+        <a href="https://tenor.com/view/mochi-cat-mochi-and-goma-goma-and-peach-mochi-mochi-peach-cat-gif-gif-253027946666209433">Mochi Cat GIF</a>from 
+        <a href="https://tenor.com/search/mochi-gifs">Mochi GIFs</a>
+      </div>
+      <h1>Hehehehe, I knew it! Love you a lot 😘</h1>
+    </div>
+
+    <!-- No1 page -->
+    <div class="container page" id="no1-page">
+      <div
+        class="tenor-gif-embed"
+        data-postid="22050818"
+        data-share-method="host"
+        data-aspect-ratio="1"
+        data-width="100%"
+      >
+        <a href="https://tenor.com/view/mochi-gif-22050818">Mochi Sticker</a>from
+        <a href="https://tenor.com/search/mochi-stickers">Mochi Stickers</a>
+      </div>
+      <h1>Please think again! 🙄</h1>
+      <p>itni jaldi nahi matt bolo😥</p>
+
+      <div class="btn">
+        <a id="yes-btn-1">Yes</a>
+        <a id="no-btn-1">No</a>
+      </div>
+    </div>
+
+    <!-- No2 page -->
+    <div class="container page" id="no2-page">
+      <div
+        class="tenor-gif-embed"
+        data-postid="15195810"
+        data-share-method="host"
+        data-aspect-ratio="1"
+        data-width="100%"
+      >
+        <a href="https://tenor.com/view/couple-forgive-me-asking-for-forgiveness-begging-crying-gif-15195810">Couple Forgive Me Sticker</a>from
+        <a href="https://tenor.com/search/couple-stickers">Couple Stickers</a>
+      </div>
+      <h1>Ek aur baar Soch lo! 😣</h1>
+      <p>kyu aisa kar rahi ho 😣</p>
+
+      <div class="btn">
+        <a id="yes-btn-2">Yes</a>
+        <a id="no-btn-2">No</a>
+      </div>
+    </div>
+
+    <!-- No3 page -->
+    <div class="container page" id="no3-page">
+      <div
+        class="tenor-gif-embed"
+        data-postid="15974530976611222074"
+        data-share-method="host"
+        data-aspect-ratio="1.26923"
+        data-width="100%"
+      >
+        <a href="https://tenor.com/view/peach-goma-phone-gif-15974530976611222074">Peach Goma Phone Sticker</a>from
+        <a href="https://tenor.com/search/peach+goma-stickers">Peach Goma Stickers</a>
+      </div>
+      <h1>Baby Man jao na! Kitna bhav khaogi 😭</h1>
+      <p>bhut glt baat hai yaar😭</p>
+
+      <div class="btn">
+        <a id="yes-btn-3">Yes</a>
+        <a id="no-btn-3">No</a>
+      </div>
+    </div>
+
+    <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+  </body>
+</html>
